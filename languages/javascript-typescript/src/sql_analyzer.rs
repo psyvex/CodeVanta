@@ -1,5 +1,6 @@
 use codevanta_engine::{
-    AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Evidence, Finding, Location, Severity,
+    AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Evidence, Finding, Location,
+    Severity,
 };
 
 use crate::{has_syntax_errors, parse};
@@ -18,11 +19,17 @@ impl Analyzer for RawSqlTemplateAnalyzer {
         )
     }
 
-    fn analyze(&self, context: &AnalysisContext) -> Result<Vec<Finding>, codevanta_engine::AnalyzerError> {
+    fn analyze(
+        &self,
+        context: &AnalysisContext,
+    ) -> Result<Vec<Finding>, codevanta_engine::AnalyzerError> {
         let mut findings = Vec::new();
 
         for file in context.files() {
-            if !matches!(file.language.as_deref(), Some("javascript") | Some("typescript")) {
+            if !matches!(
+                file.language.as_deref(),
+                Some("javascript") | Some("typescript")
+            ) {
                 continue;
             }
 
@@ -44,20 +51,24 @@ impl Analyzer for RawSqlTemplateAnalyzer {
                 if node.kind() == "call_expression" {
                     if let Some(function) = node.child_by_field_name("function") {
                         if function.kind() == "member_expression" {
-                            let property = function
-                                .child_by_field_name("property")
-                                .and_then(|property| property.utf8_text(file.content.as_bytes()).ok());
+                            let property =
+                                function
+                                    .child_by_field_name("property")
+                                    .and_then(|property| {
+                                        property.utf8_text(file.content.as_bytes()).ok()
+                                    });
 
-                            let query_like = matches!(
-                                property,
-                                Some("query") | Some("execute") | Some("raw")
-                            );
+                            let query_like =
+                                matches!(property, Some("query") | Some("execute") | Some("raw"));
 
                             if query_like {
                                 if let Some(arguments) = node.child_by_field_name("arguments") {
-                                    for argument in arguments.named_children(&mut arguments.walk()) {
+                                    for argument in arguments.named_children(&mut arguments.walk())
+                                    {
                                         if argument.kind() != "template_string"
-                                            || argument.child_by_field_name("string_fragment").is_none()
+                                            || argument
+                                                .child_by_field_name("string_fragment")
+                                                .is_none()
                                         {
                                             continue;
                                         }
@@ -133,7 +144,9 @@ mod tests {
         let context = AnalysisContext::new(vec![SourceFile {
             path: "src/user.ts".into(),
             language: Some("typescript".into()),
-            content: "const id = input.id;\ndataSource.query(`SELECT * FROM users WHERE id = ${id}`);".into(),
+            content:
+                "const id = input.id;\ndataSource.query(`SELECT * FROM users WHERE id = ${id}`);"
+                    .into(),
         }]);
 
         let findings = RawSqlTemplateAnalyzer
