@@ -1,16 +1,33 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { isKnownEcosystemValue, NODE_ECOSYSTEM } from '../../../ecosystem/javascript/catalog.js';
+import { detectJavaScriptEcosystemFromManifest } from '../../../ecosystems/javascript/src/detector.js';
 
-test('contains the initial Node.js ecosystem scope', () => {
-  assert.ok(NODE_ECOSYSTEM.languages.includes('typescript'));
-  assert.ok(NODE_ECOSYSTEM.frameworks.includes('nestjs'));
-  assert.ok(NODE_ECOSYSTEM.orms.includes('typeorm'));
-  assert.ok(NODE_ECOSYSTEM.orms.includes('prisma'));
-  assert.ok(NODE_ECOSYSTEM.databases.includes('postgresql'));
+test('detects known Node.js technologies from package metadata', () => {
+  const context = detectJavaScriptEcosystemFromManifest({
+    dependencies: {
+      '@nestjs/common': '^11.0.0',
+      typeorm: '^0.3.0',
+      pg: '^8.0.0',
+    },
+    devDependencies: {
+      typescript: '^5.0.0',
+    },
+  });
+
+  assert.equal(context.language, 'typescript');
+  assert.equal(context.runtime, 'nodejs');
+  assert.deepEqual(
+    context.technologies.map((technology) => technology.id),
+    ['nestjs', 'typeorm'],
+  );
 });
 
-test('recognizes catalog values', () => {
-  assert.equal(isKnownEcosystemValue('nestjs'), true);
-  assert.equal(isKnownEcosystemValue('unknown-framework'), false);
+test('ignores packages outside the known ecosystem catalog', () => {
+  const context = detectJavaScriptEcosystemFromManifest({
+    dependencies: {
+      'unknown-framework': '^1.0.0',
+    },
+  });
+
+  assert.deepEqual(context.technologies, []);
 });
