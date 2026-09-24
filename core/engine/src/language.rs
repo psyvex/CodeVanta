@@ -9,7 +9,11 @@ pub struct LanguageDescriptor {
 }
 
 impl LanguageDescriptor {
-    pub fn new(id: impl Into<String>, display_name: impl Into<String>, extensions: Vec<String>) -> Self {
+    pub fn new(
+        id: impl Into<String>,
+        display_name: impl Into<String>,
+        extensions: Vec<String>,
+    ) -> Self {
         Self {
             id: id.into(),
             display_name: display_name.into(),
@@ -22,12 +26,11 @@ impl LanguageDescriptor {
 pub trait Language: Send + Sync {
     fn descriptor(&self) -> LanguageDescriptor;
 
-    fn detect(&self, path: &str, source: &str) -> bool {
+    fn detect(&self, path: &str, _source: &str) -> bool {
         self.descriptor()
             .extensions
             .iter()
             .any(|extension| path.ends_with(extension))
-            || source.is_empty() && false
     }
 }
 
