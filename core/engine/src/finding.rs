@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Severity describes the potential impact if a finding is valid.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
 pub enum Severity {
     Critical,
     High,
@@ -13,6 +14,7 @@ pub enum Severity {
 /// Confidence describes how strongly the available evidence supports a finding.
 /// It is independent from severity: a critical issue can still be only possible.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
 pub enum Confidence {
     Definite,
     Likely,
@@ -22,6 +24,7 @@ pub enum Confidence {
 
 /// A source location associated with a finding or piece of evidence.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
 pub struct Location {
     pub path: String,
     pub start_line: u32,
@@ -33,6 +36,7 @@ pub struct Location {
 /// Evidence supporting a finding from deterministic tools, source-flow analysis,
 /// model reasoning, or another repository artifact.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
 pub struct Evidence {
     pub kind: String,
     pub message: Option<String>,
@@ -41,6 +45,7 @@ pub struct Evidence {
 
 /// A structured code-quality finding produced by a deterministic or AI analyzer.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
 pub struct Finding {
     pub id: String,
     pub rule_id: String,
@@ -88,7 +93,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn finding_serializes_with_separate_severity_and_confidence() {
+    fn finding_serializes_with_schema_compatible_names() {
         let finding = Finding::new(
             "finding-1",
             "security.sql-injection",
@@ -100,7 +105,8 @@ mod tests {
         );
 
         let json = serde_json::to_string(&finding).expect("finding should serialize");
-        assert!(json.contains("Critical"));
-        assert!(json.contains("Possible"));
+        assert!(json.contains("\"severity\":\"critical\""));
+        assert!(json.contains("\"confidence\":\"possible\""));
+        assert!(json.contains("\"ruleId\""));
     }
 }
