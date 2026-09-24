@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use codevanta_engine::{AnalysisContext, Engine, SourceFile};
+use codevanta_engine::{AnalysisContext, Engine, Language, SourceFile};
 use codevanta_javascript_typescript::{
     ConsoleLogAnalyzer, JavaScriptTypeScript, RawSqlTemplateAnalyzer,
 };
@@ -20,7 +20,8 @@ fn main() {
 
 fn run() -> Result<(), Box<dyn std::error::Error>> {
     let mut args = env::args().skip(1);
-    let command = args.next().as_deref().unwrap_or("");
+    let command_arg = args.next();
+    let command = command_arg.as_deref().unwrap_or("");
 
     if command != "analyze" {
         eprintln!("usage: codevanta analyze <path>");
