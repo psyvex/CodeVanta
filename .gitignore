@@ -1,0 +1,30 @@
+# Rust
+**/target/
+
+# Python
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+.venv/
+venv/
+
+# Node/TypeScript
+node_modules/
+dist/
+coverage/
+
+# Local model artifacts
+*.gguf
+*.safetensors
+*.bin
+*.onnx
+models/artifacts/
+
+# Dataset outputs and raw sources
+datasets/generated/
+datasets/raw/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
