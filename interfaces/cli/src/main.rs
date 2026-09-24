@@ -1,7 +1,12 @@
-use std::{env, fs, io, path::{Path, PathBuf}};
+use std::{
+    env, fs, io,
+    path::{Path, PathBuf},
+};
 
 use codevanta_engine::{AnalysisContext, Engine, SourceFile};
-use codevanta_javascript_typescript::{ConsoleLogAnalyzer, JavaScriptTypeScript, RawSqlTemplateAnalyzer};
+use codevanta_javascript_typescript::{
+    ConsoleLogAnalyzer, JavaScriptTypeScript, RawSqlTemplateAnalyzer,
+};
 use serde_json::to_string_pretty;
 
 const IGNORED_DIRECTORIES: &[&str] = &[".git", "node_modules", "target", "dist", "coverage"];
@@ -51,8 +56,10 @@ fn collect_source_files(
         let source = fs::read_to_string(path)?;
         let display_path = path.to_string_lossy().to_string();
         if language.detect(&display_path, &source) {
-            let language_id = if display_path.ends_with(".ts") || display_path.ends_with(".tsx")
-                || display_path.ends_with(".mts") || display_path.ends_with(".cts")
+            let language_id = if display_path.ends_with(".ts")
+                || display_path.ends_with(".tsx")
+                || display_path.ends_with(".mts")
+                || display_path.ends_with(".cts")
             {
                 "typescript"
             } else {
