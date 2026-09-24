@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 export type EvidenceKind = 'manifest' | 'import' | 'config' | 'file';
+export type DetectionConfidence = 'definite' | 'likely' | 'possible';
 
 export interface EcosystemEvidence {
   kind: EvidenceKind;
@@ -11,7 +12,7 @@ export interface EcosystemEvidence {
 
 export interface DetectedTechnology {
   id: string;
-  confidence: 'definite' | 'likely' | 'possible';
+  confidence: DetectionConfidence;
   evidence: EcosystemEvidence[];
 }
 
@@ -19,6 +20,11 @@ export interface JavaScriptEcosystemContext {
   language: 'javascript' | 'typescript';
   runtime?: 'nodejs';
   technologies: DetectedTechnology[];
+}
+
+export interface PackageManifest {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
 }
 
 const TECHNOLOGY_BY_PACKAGE: Record<string, string> = {
@@ -36,15 +42,9 @@ const TECHNOLOGY_BY_PACKAGE: Record<string, string> = {
   kysely: 'kysely',
 };
 
-export async function detectJavaScriptEcosystem(
-  root: string,
-): Promise<JavaScriptEcosystemContext> {
-  const packageJsonPath = resolve(root, 'package.json');
-  const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-  };
-
+export function detectJavaScriptEcosystemFromManifest(
+  packageJson: PackageManifest,
+): JavaScriptEcosystemContext {
   const dependencies = {
     ...packageJson.dependencies,
     ...packageJson.devDependencies,
@@ -74,9 +74,13 @@ export async function detectJavaScriptEcosystem(
     ? 'typescript'
     : 'javascript';
 
-  return {
-    language,
-    runtime: 'nodejs',
-    technologies,
-  };
+  return { language, runtime: 'nodejs', technologies };
+}
+
+export async function detectJavaScriptEcosystem(
+  root: string,
+): Promise<JavaScriptEcosystemContext> {
+  const packageJsonPath = resolve(root, 'package.json');
+  const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as PackageManifest;
+  return detectJavaScriptEcosystemFromManifest(packageJson);
 }
