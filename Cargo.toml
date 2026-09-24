@@ -3,6 +3,7 @@ resolver = "2"
 members = [
   "core/engine",
   "interfaces/cli",
+  "languages/javascript-typescript",
 ]
 
 [workspace.package]
