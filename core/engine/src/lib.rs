@@ -3,12 +3,14 @@ pub mod context;
 pub mod engine;
 pub mod errors;
 pub mod finding;
+pub mod language;
 
 pub use analyzer::{Analyzer, AnalyzerDescriptor};
 pub use context::{AnalysisContext, SourceFile};
 pub use engine::Engine;
 pub use errors::AnalyzerError;
 pub use finding::{Confidence, Evidence, Finding, Location, Severity};
+pub use language::{Language, LanguageDescriptor};
 
 #[cfg(test)]
 mod tests {
