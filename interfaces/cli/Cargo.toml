@@ -7,3 +7,5 @@ license.workspace = true
 
 [dependencies]
 codevanta-engine = { path = "../../core/engine" }
+codevanta-javascript-typescript = { path = "../../languages/javascript-typescript" }
+serde_json = "1"
