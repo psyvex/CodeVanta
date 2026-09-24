@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codevanta.dev/schemas/training-example.schema.json",
+  "title": "CodeVanta Review Training Example",
+  "type": "object",
+  "required": ["language", "code", "finding", "provenance"],
+  "properties": {
+    "language": {"enum": ["javascript", "typescript"]},
+    "framework": {"type": ["string", "null"]},
+    "library": {"type": ["string", "null"]},
+    "database": {"type": ["string", "null"]},
+    "code": {"type": "string", "minLength": 1},
+    "context": {"type": "string"},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "finding": {
+      "type": "object",
+      "required": ["category", "confidence", "severity", "summary"],
+      "properties": {
+        "category": {"type": "string"},
+        "confidence": {"enum": ["definite", "likely", "possible", "suggestion"]},
+        "confidence_score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "severity": {"enum": ["critical", "high", "medium", "low", "info"]},
+        "summary": {"type": "string"},
+        "reason": {"type": "string"},
+        "suggested_patch": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source_type", "source_url"],
+      "properties": {
+        "source_type": {"enum": ["repository", "commit", "pull-request", "issue", "synthetic", "human-authored"]},
+        "source_url": {"type": "string", "format": "uri"},
+        "repository": {"type": ["string", "null"]},
+        "commit": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
