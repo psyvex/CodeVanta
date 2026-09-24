@@ -12,7 +12,29 @@ pub use finding::{Confidence, Evidence, Finding, Location, Severity};
 
 #[cfg(test)]
 mod tests {
-    use super::{Confidence, Finding, Severity};
+    use super::{
+        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Engine, Finding, Severity,
+    };
+
+    struct TestAnalyzer;
+
+    impl Analyzer for TestAnalyzer {
+        fn descriptor(&self) -> AnalyzerDescriptor {
+            AnalyzerDescriptor::new("test", "Test analyzer", "0.1.0")
+        }
+
+        fn analyze(&self, _context: &AnalysisContext) -> Result<Vec<Finding>, super::AnalyzerError> {
+            Ok(vec![Finding::new(
+                "finding-1",
+                "test.rule",
+                "correctness",
+                Severity::Low,
+                Confidence::Definite,
+                "Test finding",
+                self.descriptor().id,
+            )])
+        }
+    }
 
     #[test]
     fn finding_round_trips_as_json() {
@@ -30,5 +52,15 @@ mod tests {
         let decoded: Finding = serde_json::from_str(&encoded).expect("finding should deserialize");
 
         assert_eq!(decoded, finding);
+    }
+
+    #[test]
+    fn engine_runs_registered_analyzers() {
+        let engine = Engine::new().with_analyzer(TestAnalyzer);
+        let context = AnalysisContext::default();
+
+        let findings = engine.analyze(&context).expect("analyzer should succeed");
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].rule_id, "test.rule");
     }
 }
