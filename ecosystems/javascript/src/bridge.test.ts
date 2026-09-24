@@ -23,7 +23,18 @@ test('converts JavaScript ecosystem detection into engine context', () => {
 
   assert.deepEqual(context, {
     runtime: 'nodejs',
-    technologies: ['nestjs', 'typeorm'],
+    technologies: [
+      {
+        id: 'nestjs',
+        confidence: 'definite',
+        evidence: [{ kind: 'manifest', source: 'package.json', detail: 'dependency: @nestjs/core' }],
+      },
+      {
+        id: 'typeorm',
+        confidence: 'definite',
+        evidence: [{ kind: 'manifest', source: 'package.json', detail: 'dependency: typeorm' }],
+      },
+    ],
   });
 });
 
