@@ -41,7 +41,7 @@ impl Analyzer for ConsoleLogAnalyzer {
                     rule_id: "javascript.console-log".into(),
                     category: "maintainability".into(),
                     severity: Severity::Low,
-                    confidence: Confidence::Definite,
+                    confidence: Confidence::Likely,
                     message: "console.log is present in application source.".into(),
                     explanation: Some(
                         "Prefer the project's structured logging mechanism or remove debug output before production use."
@@ -67,7 +67,7 @@ impl Analyzer for ConsoleLogAnalyzer {
 #[cfg(test)]
 mod tests {
     use super::ConsoleLogAnalyzer;
-    use codevanta_engine::{AnalysisContext, Analyzer, SourceFile};
+    use codevanta_engine::{AnalysisContext, Analyzer, Confidence, SourceFile};
 
     #[test]
     fn reports_console_log_with_source_location() {
@@ -83,6 +83,6 @@ mod tests {
 
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].location.as_ref().unwrap().start_line, 2);
-        assert_eq!(findings[0].confidence, codevanta_engine::Confidence::Definite);
+        assert_eq!(findings[0].confidence, Confidence::Likely);
     }
 }
