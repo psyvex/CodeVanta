@@ -1,0 +1,101 @@
+{
+  "version": "0.1.0",
+  "categories": {
+    "security": [
+      "injection",
+      "xss",
+      "ssrf",
+      "path-traversal",
+      "command-injection",
+      "insecure-deserialization",
+      "secrets",
+      "authentication",
+      "authorization",
+      "session-management",
+      "cryptography",
+      "sensitive-data-exposure"
+    ],
+    "database": [
+      "sql-injection",
+      "unsafe-raw-query",
+      "n-plus-one",
+      "missing-index",
+      "transaction-boundary",
+      "connection-management",
+      "migration-risk",
+      "orm-misuse",
+      "pagination",
+      "concurrency"
+    ],
+    "typescript-javascript": [
+      "unsafe-any",
+      "type-erasure",
+      "promise-misuse",
+      "async-error-handling",
+      "nullish-handling",
+      "prototype-risk",
+      "module-boundary",
+      "dead-code",
+      "complexity"
+    ],
+    "nestjs": [
+      "module-boundary",
+      "dependency-injection",
+      "provider-lifetime",
+      "guard-misuse",
+      "pipe-validation",
+      "interceptor-misuse",
+      "exception-filter",
+      "controller-responsibility",
+      "service-responsibility",
+      "configuration",
+      "request-context"
+    ],
+    "architecture": [
+      "coupling",
+      "cohesion",
+      "layer-violation",
+      "circular-dependency",
+      "boundary-violation",
+      "abstraction-leak",
+      "god-class",
+      "god-module"
+    ],
+    "maintainability": [
+      "naming",
+      "duplication",
+      "complexity",
+      "large-function",
+      "large-class",
+      "unclear-control-flow",
+      "error-handling",
+      "configuration-sprawl"
+    ],
+    "testing": [
+      "missing-test",
+      "weak-assertion",
+      "missing-edge-case",
+      "flaky-test-risk",
+      "integration-boundary",
+      "mocking-problem"
+    ],
+    "performance": [
+      "unnecessary-allocation",
+      "blocking-operation",
+      "query-overhead",
+      "n-plus-one",
+      "unbounded-result",
+      "cache-misuse",
+      "event-loop-blocking"
+    ],
+    "standards": [
+      "typescript-convention",
+      "javascript-convention",
+      "node-convention",
+      "nestjs-convention",
+      "project-rule"
+    ]
+  },
+  "confidence_levels": ["definite", "likely", "possible", "suggestion"],
+  "severity_levels": ["critical", "high", "medium", "low", "info"]
+}
