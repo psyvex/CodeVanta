@@ -10,11 +10,7 @@ pub struct AnalyzerDescriptor {
 }
 
 impl AnalyzerDescriptor {
-    pub fn new(
-        id: impl Into<String>,
-        name: impl Into<String>,
-        version: impl Into<String>,
-    ) -> Self {
+    pub fn new(id: impl Into<String>, name: impl Into<String>, version: impl Into<String>) -> Self {
         Self {
             id: id.into(),
             name: name.into(),
