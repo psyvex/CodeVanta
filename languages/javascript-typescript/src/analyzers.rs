@@ -1,5 +1,6 @@
 use codevanta_engine::{
-    AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Evidence, Finding, Location, Severity,
+    AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Evidence, Finding, Location,
+    Severity,
 };
 
 use crate::{has_syntax_errors, parse};
@@ -16,11 +17,17 @@ impl Analyzer for ConsoleLogAnalyzer {
         )
     }
 
-    fn analyze(&self, context: &AnalysisContext) -> Result<Vec<Finding>, codevanta_engine::AnalyzerError> {
+    fn analyze(
+        &self,
+        context: &AnalysisContext,
+    ) -> Result<Vec<Finding>, codevanta_engine::AnalyzerError> {
         let mut findings = Vec::new();
 
         for file in context.files() {
-            if !matches!(file.language.as_deref(), Some("javascript") | Some("typescript")) {
+            if !matches!(
+                file.language.as_deref(),
+                Some("javascript") | Some("typescript")
+            ) {
                 continue;
             }
 
@@ -145,7 +152,8 @@ mod tests {
         let context = AnalysisContext::new(vec![SourceFile {
             path: "src/App.tsx".into(),
             language: Some("typescript".into()),
-            content: "export const App = () => <button onClick={() => console.log('clicked')} />;".into(),
+            content: "export const App = () => <button onClick={() => console.log('clicked')} />;"
+                .into(),
         }]);
 
         let findings = ConsoleLogAnalyzer
