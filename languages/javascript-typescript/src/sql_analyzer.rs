@@ -65,11 +65,7 @@ impl Analyzer for RawSqlTemplateAnalyzer {
                                 if let Some(arguments) = node.child_by_field_name("arguments") {
                                     for argument in arguments.named_children(&mut arguments.walk())
                                     {
-                                        if argument.kind() != "template_string"
-                                            || argument
-                                                .child_by_field_name("string_fragment")
-                                                .is_none()
-                                        {
+                                        if argument.kind() != "template_string" {
                                             continue;
                                         }
 
