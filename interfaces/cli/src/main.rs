@@ -1,7 +1,7 @@
 use std::{env, fs, io, path::{Path, PathBuf}};
 
-use codevanta_engine::{AnalysisContext, Engine, Language, SourceFile};
-use codevanta_javascript_typescript::{ConsoleLogAnalyzer, JavaScriptTypeScript};
+use codevanta_engine::{AnalysisContext, Engine, SourceFile};
+use codevanta_javascript_typescript::{ConsoleLogAnalyzer, JavaScriptTypeScript, RawSqlTemplateAnalyzer};
 use serde_json::to_string_pretty;
 
 const IGNORED_DIRECTORIES: &[&str] = &[".git", "node_modules", "target", "dist", "coverage"];
@@ -28,11 +28,18 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     collect_source_files(&root, &language, &mut files)?;
 
     let context = AnalysisContext::new(files);
-    let engine = Engine::new().with_analyzer(ConsoleLogAnalyzer);
+    let engine = default_engine();
     let findings = engine.analyze(&context)?;
 
     println!("{}", to_string_pretty(&findings)?);
     Ok(())
+}
+
+fn default_engine() -> Engine {
+    let mut engine = Engine::new();
+    engine.add_analyzer(ConsoleLogAnalyzer);
+    engine.add_analyzer(RawSqlTemplateAnalyzer);
+    engine
 }
 
 fn collect_source_files(
