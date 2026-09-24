@@ -51,15 +51,18 @@ impl Analyzer for RawSqlTemplateAnalyzer {
                 if node.kind() == "call_expression" {
                     if let Some(function) = node.child_by_field_name("function") {
                         if function.kind() == "member_expression" {
-                            let property =
-                                function
-                                    .child_by_field_name("property")
-                                    .and_then(|property| {
-                                        property.utf8_text(file.content.as_bytes()).ok()
-                                    });
+                            let property = function
+                                .child_by_field_name("property")
+                                .and_then(|property| {
+                                    property.utf8_text(file.content.as_bytes()).ok()
+                                });
 
-                            let query_like =
-                                matches!(property, Some("query") | Some("execute") | Some("raw"));
+                            // `raw` is intentionally excluded here because it is a common
+                            // generic method name (for example, logger.raw()). Without
+                            // receiver/package context, treating every `.raw()` call as SQL
+                            // produces false positives. `query` and `execute` are explicit
+                            // database-operation names and remain useful conservative signals.
+                            let query_like = matches!(property, Some("query") | Some("execute"));
 
                             if query_like {
                                 if let Some(arguments) = node.child_by_field_name("arguments") {
@@ -113,7 +116,11 @@ impl Analyzer for RawSqlTemplateAnalyzer {
                                                 locations: vec![location],
                                             }],
                                             analyzer: self.descriptor().id,
-                                            tags: vec!["javascript".into(), "typescript".into(), "sql".into()],
+                                            tags: vec![
+                                                "javascript".into(),
+                                                "typescript".into(),
+                                                "sql".into(),
+                                            ],
                                         });
                                     }
                                 }
