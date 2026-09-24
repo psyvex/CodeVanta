@@ -46,13 +46,24 @@ pub fn has_syntax_errors(tree: &Tree) -> bool {
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
+
     use super::{Dialect, has_syntax_errors, parse};
 
     #[test]
     fn selects_grammar_by_extension() {
-        assert_eq!(Dialect::from_path("src/app.js"), Some(Dialect::JavaScript));
-        assert_eq!(Dialect::from_path("src/app.tsx"), Some(Dialect::Tsx));
-        assert_eq!(Dialect::from_path("src/app.ts"), Some(Dialect::TypeScript));
+        assert_eq!(
+            Dialect::from_path(Path::new("src/app.js")),
+            Some(Dialect::JavaScript)
+        );
+        assert_eq!(
+            Dialect::from_path(Path::new("src/app.tsx")),
+            Some(Dialect::Tsx)
+        );
+        assert_eq!(
+            Dialect::from_path(Path::new("src/app.ts")),
+            Some(Dialect::TypeScript)
+        );
     }
 
     #[test]
