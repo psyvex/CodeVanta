@@ -22,9 +22,8 @@ impl Dialect {
 }
 
 pub fn parse(path: &str, source: &str) -> Result<Tree, String> {
-    let dialect = Dialect::from_path(Path::new(path)).ok_or_else(|| {
-        format!("unsupported JavaScript/TypeScript parser input: {path}")
-    })?;
+    let dialect = Dialect::from_path(Path::new(path))
+        .ok_or_else(|| format!("unsupported JavaScript/TypeScript parser input: {path}"))?;
 
     let language: Language = match dialect {
         Dialect::JavaScript | Dialect::TypeScript => LANGUAGE_TYPESCRIPT.into(),
@@ -47,7 +46,7 @@ pub fn has_syntax_errors(tree: &Tree) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{has_syntax_errors, parse, Dialect};
+    use super::{Dialect, has_syntax_errors, parse};
 
     #[test]
     fn selects_grammar_by_extension() {
@@ -64,7 +63,8 @@ mod tests {
 
     #[test]
     fn parses_tsx_with_jsx() {
-        let tree = parse("src/app.tsx", "export const App = () => <main />;").expect("should parse");
+        let tree =
+            parse("src/app.tsx", "export const App = () => <main />;").expect("should parse");
         assert!(!has_syntax_errors(&tree));
     }
 }
