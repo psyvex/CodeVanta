@@ -6,7 +6,7 @@ pub mod finding;
 pub mod language;
 
 pub use analyzer::{Analyzer, AnalyzerDescriptor};
-pub use context::{AnalysisContext, SourceFile};
+pub use context::{AnalysisContext, EcosystemContext, SourceFile};
 pub use engine::Engine;
 pub use errors::AnalyzerError;
 pub use finding::{Confidence, Evidence, Finding, Location, Severity};
@@ -15,7 +15,8 @@ pub use language::{Language, LanguageDescriptor};
 #[cfg(test)]
 mod tests {
     use super::{
-        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Engine, Finding, Severity,
+        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Engine, EcosystemContext,
+        Finding, Severity,
     };
 
     struct TestAnalyzer;
@@ -64,5 +65,18 @@ mod tests {
         let findings = engine.analyze(&context).expect("analyzer should succeed");
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].rule_id, "test.rule");
+    }
+
+    #[test]
+    fn ecosystem_context_is_structured() {
+        let mut context = AnalysisContext::default();
+        context.set_ecosystem(EcosystemContext {
+            runtime: Some("nodejs".into()),
+            technologies: vec!["nestjs".into(), "typeorm".into()],
+        });
+
+        let ecosystem = context.ecosystem().expect("ecosystem context should exist");
+        assert_eq!(ecosystem.runtime.as_deref(), Some("nodejs"));
+        assert!(ecosystem.technologies.contains(&"typeorm".into()));
     }
 }
