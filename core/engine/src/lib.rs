@@ -1,9 +1,13 @@
 pub mod analyzer;
 pub mod context;
+pub mod engine;
+pub mod errors;
 pub mod finding;
 
 pub use analyzer::{Analyzer, AnalyzerDescriptor};
 pub use context::{AnalysisContext, SourceFile};
+pub use engine::Engine;
+pub use errors::AnalyzerError;
 pub use finding::{Confidence, Evidence, Finding, Location, Severity};
 
 #[cfg(test)]
