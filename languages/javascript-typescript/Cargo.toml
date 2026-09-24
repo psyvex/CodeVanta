@@ -7,3 +7,5 @@ description = "JavaScript and TypeScript language integration for CodeVanta"
 
 [dependencies]
 codevanta-engine = { path = "../../core/engine" }
+tree-sitter.workspace = true
+tree-sitter-typescript.workspace = true
