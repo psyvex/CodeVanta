@@ -15,7 +15,7 @@ pub use language::{Language, LanguageDescriptor};
 #[cfg(test)]
 mod tests {
     use super::{
-        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, Engine, EcosystemContext,
+        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, EcosystemContext, Engine,
         Finding, Severity,
     };
 
@@ -26,7 +26,10 @@ mod tests {
             AnalyzerDescriptor::new("test", "Test analyzer", "0.1.0")
         }
 
-        fn analyze(&self, _context: &AnalysisContext) -> Result<Vec<Finding>, super::AnalyzerError> {
+        fn analyze(
+            &self,
+            _context: &AnalysisContext,
+        ) -> Result<Vec<Finding>, super::AnalyzerError> {
             Ok(vec![Finding::new(
                 "finding-1",
                 "test.rule",
