@@ -1,3 +1,7 @@
+mod analyzers;
+
+pub use analyzers::ConsoleLogAnalyzer;
+
 use codevanta_engine::{Language, LanguageDescriptor};
 
 #[derive(Debug, Default, Clone, Copy)]
