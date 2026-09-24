@@ -1,8 +1,10 @@
 mod analyzers;
 mod parser;
+mod sql_analyzer;
 
 pub use analyzers::ConsoleLogAnalyzer;
 pub use parser::{has_syntax_errors, parse, Dialect};
+pub use sql_analyzer::RawSqlTemplateAnalyzer;
 
 use codevanta_engine::{Language, LanguageDescriptor};
 
