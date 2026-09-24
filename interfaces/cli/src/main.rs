@@ -4,6 +4,8 @@ use codevanta_engine::{AnalysisContext, Engine, Language, SourceFile};
 use codevanta_javascript_typescript::{ConsoleLogAnalyzer, JavaScriptTypeScript};
 use serde_json::to_string_pretty;
 
+const IGNORED_DIRECTORIES: &[&str] = &[".git", "node_modules", "target", "dist", "coverage"];
+
 fn main() {
     if let Err(error) = run() {
         eprintln!("error: {error}");
@@ -60,6 +62,15 @@ fn collect_source_files(
 
     for entry in fs::read_dir(path)? {
         let entry_path = entry?.path();
+        if entry_path.is_dir()
+            && entry_path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| IGNORED_DIRECTORIES.contains(&name))
+        {
+            continue;
+        }
+
         collect_source_files(&entry_path, language, files)?;
     }
 
