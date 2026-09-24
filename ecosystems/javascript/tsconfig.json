@@ -8,7 +8,7 @@
     "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": "src"
   },
-  "include": ["**/*.ts", "../../../tests/ecosystem/javascript/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }
