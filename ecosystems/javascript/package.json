@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node --test --import tsx ../../../tests/ecosystem/javascript"
+    "test": "node --test --import tsx ../../tests/ecosystem/javascript/*.test.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
