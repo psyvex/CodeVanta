@@ -6,7 +6,10 @@ pub mod finding;
 pub mod language;
 
 pub use analyzer::{Analyzer, AnalyzerDescriptor};
-pub use context::{AnalysisContext, EcosystemContext, SourceFile};
+pub use context::{
+    AnalysisContext, DetectionConfidence, EcosystemContext, SourceFile, TechnologyContext,
+    TechnologyEvidence,
+};
 pub use engine::Engine;
 pub use errors::AnalyzerError;
 pub use finding::{Confidence, Evidence, Finding, Location, Severity};
@@ -15,8 +18,8 @@ pub use language::{Language, LanguageDescriptor};
 #[cfg(test)]
 mod tests {
     use super::{
-        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, EcosystemContext, Engine,
-        Finding, Severity,
+        AnalysisContext, Analyzer, AnalyzerDescriptor, Confidence, DetectionConfidence,
+        EcosystemContext, Engine, Finding, Severity, TechnologyContext, TechnologyEvidence,
     };
 
     struct TestAnalyzer;
@@ -71,15 +74,24 @@ mod tests {
     }
 
     #[test]
-    fn ecosystem_context_is_structured() {
+    fn ecosystem_context_preserves_provenance() {
         let mut context = AnalysisContext::default();
         context.set_ecosystem(EcosystemContext {
             runtime: Some("nodejs".into()),
-            technologies: vec!["nestjs".into(), "typeorm".into()],
+            technologies: vec![TechnologyContext {
+                id: "typeorm".into(),
+                confidence: DetectionConfidence::Definite,
+                evidence: vec![TechnologyEvidence {
+                    kind: "manifest".into(),
+                    source: "package.json".into(),
+                    detail: "dependency: typeorm".into(),
+                }],
+            }],
         });
 
         let ecosystem = context.ecosystem().expect("ecosystem context should exist");
-        assert_eq!(ecosystem.runtime.as_deref(), Some("nodejs"));
-        assert!(ecosystem.technologies.contains(&"typeorm".into()));
+        assert_eq!(ecosystem.technologies[0].id, "typeorm");
+        assert_eq!(ecosystem.technologies[0].confidence, DetectionConfidence::Definite);
+        assert_eq!(ecosystem.technologies[0].evidence[0].source, "package.json");
     }
 }
