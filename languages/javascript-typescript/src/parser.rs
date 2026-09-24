@@ -5,6 +5,7 @@ use tree_sitter_typescript::{LANGUAGE_TSX, LANGUAGE_TYPESCRIPT};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Dialect {
+    JavaScript,
     TypeScript,
     Tsx,
 }
@@ -12,7 +13,8 @@ pub enum Dialect {
 impl Dialect {
     pub fn from_path(path: &Path) -> Option<Self> {
         match path.extension().and_then(|extension| extension.to_str()) {
-            Some("tsx") | Some("jsx") => Some(Self::Tsx),
+            Some("jsx") | Some("tsx") => Some(Self::Tsx),
+            Some("js") | Some("mjs") | Some("cjs") => Some(Self::JavaScript),
             Some("ts") | Some("mts") | Some("cts") => Some(Self::TypeScript),
             _ => None,
         }
@@ -25,7 +27,7 @@ pub fn parse(path: &str, source: &str) -> Result<Tree, String> {
     })?;
 
     let language: Language = match dialect {
-        Dialect::TypeScript => LANGUAGE_TYPESCRIPT.into(),
+        Dialect::JavaScript | Dialect::TypeScript => LANGUAGE_TYPESCRIPT.into(),
         Dialect::Tsx => LANGUAGE_TSX.into(),
     };
 
@@ -48,7 +50,8 @@ mod tests {
     use super::{has_syntax_errors, parse, Dialect};
 
     #[test]
-    fn selects_tsx_for_tsx_files() {
+    fn selects_grammar_by_extension() {
+        assert_eq!(Dialect::from_path("src/app.js"), Some(Dialect::JavaScript));
         assert_eq!(Dialect::from_path("src/app.tsx"), Some(Dialect::Tsx));
         assert_eq!(Dialect::from_path("src/app.ts"), Some(Dialect::TypeScript));
     }
