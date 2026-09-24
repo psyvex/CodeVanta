@@ -91,7 +91,10 @@ mod tests {
 
         let ecosystem = context.ecosystem().expect("ecosystem context should exist");
         assert_eq!(ecosystem.technologies[0].id, "typeorm");
-        assert_eq!(ecosystem.technologies[0].confidence, DetectionConfidence::Definite);
+        assert_eq!(
+            ecosystem.technologies[0].confidence,
+            DetectionConfidence::Definite
+        );
         assert_eq!(ecosystem.technologies[0].evidence[0].source, "package.json");
     }
 }
