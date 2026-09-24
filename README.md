@@ -16,6 +16,8 @@ CodeVanta will build specialized models and deterministic analysis components fo
 - Testing: Jest, Vitest, Supertest, Playwright, Cypress
 - Tooling: ESLint, Prettier, TypeScript compiler, package managers, bundlers, and common Node.js tooling
 
+The Node.js ecosystem is the first deep specialization, not the repository architecture. CodeVanta is designed to add Python, Java, Go, Rust, PHP, C#, C++, and other ecosystems without reorganizing the platform.
+
 ## Design principle
 
 CodeVanta is not intended to replace deterministic software-analysis tools. Linters, formatters, type checkers, AST analysis, dependency scanners, security scanners, and test frameworks should provide deterministic evidence. The model should focus on contextual reasoning: maintainability, architecture, suspicious error handling, likely bugs, security context, repository conventions, missing edge cases, and actionable improvements.
@@ -27,7 +29,7 @@ Repository
   -> language/framework/tool detection
   -> AST + static-analysis evidence
   -> repository context
-  -> specialized Node/TS/JS model
+  -> specialized language/ecosystem model
   -> finding classification + confidence
   -> suggested patch
   -> validation against tests/static tools
@@ -52,8 +54,23 @@ Training data should emphasize real review signals such as before/after fixes, p
 
 ## Repository layout
 
-The repository will separate ecosystem knowledge, review taxonomy, dataset schemas, training code, evaluation, and model artifacts as the project grows.
+```text
+models/       Model definitions, adapters, manifests, and artifact metadata
+datasets/     Versioned dataset outputs and manifests
+training/     Fine-tuning and reproducible training pipelines
+evaluation/   Benchmarks and model-quality measurements
+inference/    Local CPU/GPU/WebGPU/WASM inference runtimes
+analyzers/    Deterministic AST, lint, type, security, and dependency analysis
+ecosystem/    Language/framework/ORM/database/tool catalogs
+ingestion/    Git/GitHub/review/diff/license/provenance ingestion
+docker/       Reproducible development, training, evaluation, and inference images
+scripts/      Small deterministic project utilities
+docs/         Architecture and project documentation
+tests/        Automated tests
+```
+
+Large model binaries and raw third-party repositories should not be committed to the source repository.
 
 ## Status
 
-The repository currently contains the initial project specification. The next implementation stage is the Node/TypeScript/JavaScript ecosystem dataset and analysis pipeline.
+The repository now contains the initial multi-language platform structure and a language-neutral dataset core. The first deep implementation remains the Node.js/TypeScript/JavaScript ingestion and ecosystem pipeline.
