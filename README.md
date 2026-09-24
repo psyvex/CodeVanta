@@ -1,76 +1,86 @@
 # CodeVanta
 
-Local, language-specific AI models for software quality.
+Local, language-specific AI models and deterministic analysis for software quality.
 
-## Initial target: Node.js / TypeScript / JavaScript ecosystem
+## Production architecture
 
-CodeVanta will build specialized models and deterministic analysis components for reviewing and improving Node.js ecosystem code. The first model family targets:
+CodeVanta is a polyglot monorepo designed for long-term local and production use:
+
+- **Rust** is the production core: repository processing, analysis orchestration, findings, patch representation, local runtime foundations, CLI, and future LSP/server/WASM targets.
+- **Python** is the ML layer: dataset preparation, fine-tuning, evaluation, distillation, and quantization.
+- **TypeScript** is used where the JavaScript/TypeScript ecosystem is the domain, and for future editor integrations such as VS Code.
+- **Language-native tooling** is preferred when it provides authoritative parsers, compilers, analyzers, or ecosystem metadata.
+
+## Initial specialization
+
+The first deep model family targets the Node.js / TypeScript / JavaScript ecosystem:
 
 - Node.js runtime and platform APIs
-- TypeScript
-- JavaScript
-- NestJS
-- Express and Fastify
-- ORM/data-access patterns: TypeORM, Prisma, Drizzle ORM, Sequelize, MikroORM, Knex, Kysely
-- SQL and database usage: PostgreSQL, MySQL/MariaDB, SQLite, SQL Server, MongoDB, Redis
-- Testing: Jest, Vitest, Supertest, Playwright, Cypress
-- Tooling: ESLint, Prettier, TypeScript compiler, package managers, bundlers, and common Node.js tooling
+- TypeScript and JavaScript
+- NestJS, Express, and Fastify
+- TypeORM, Prisma, Drizzle ORM, Sequelize, MikroORM, Knex, and Kysely
+- PostgreSQL, MySQL/MariaDB, SQLite, SQL Server, MongoDB, and Redis
+- Jest, Vitest, Supertest, Playwright, and Cypress
+- ESLint, Prettier, TypeScript compiler, package managers, bundlers, and common Node.js tooling
 
-The Node.js ecosystem is the first deep specialization, not the repository architecture. CodeVanta is designed to add Python, Java, Go, Rust, PHP, C#, C++, and other ecosystems without reorganizing the platform.
+This is the first specialization, not the platform boundary. Python, Java, Go, Rust, PHP, C#, C++, and other ecosystems can be added without redesigning the core.
 
-## Design principle
+## Analysis philosophy
 
-CodeVanta is not intended to replace deterministic software-analysis tools. Linters, formatters, type checkers, AST analysis, dependency scanners, security scanners, and test frameworks should provide deterministic evidence. The model should focus on contextual reasoning: maintainability, architecture, suspicious error handling, likely bugs, security context, repository conventions, missing edge cases, and actionable improvements.
+CodeVanta does not attempt to replace deterministic software-analysis tools. Linters, formatters, compilers/type checkers, AST analyzers, dependency scanners, security scanners, and tests provide evidence. Models focus on contextual reasoning: maintainability, architecture, suspicious error handling, likely bugs, security context, repository conventions, missing edge cases, prioritization, explanations, and actionable patches.
 
-## Planned pipeline
+## Pipeline
 
 ```text
 Repository
   -> language/framework/tool detection
-  -> AST + static-analysis evidence
-  -> repository context
-  -> specialized language/ecosystem model
+  -> Rust core: repository + AST + deterministic analysis
+  -> ecosystem context
+  -> specialized local model
   -> finding classification + confidence
   -> suggested patch
-  -> validation against tests/static tools
+  -> deterministic/test validation
 ```
 
 ## Finding confidence
 
-Every model finding should be classified as one of:
+Every model finding must be classified as:
 
 - Definite
 - Likely
 - Possible
 - Suggestion
 
-The system must not present uncertain findings as facts.
+Uncertain findings must not be presented as facts.
 
 ## Model strategy
 
-Start from a suitable open code model and adapt it rather than training a foundation model from scratch. Prefer a shared base model with language/ecosystem-specific adapters when evaluation shows that this is effective.
+Start from a suitable open code model and adapt it rather than training a foundation model from scratch. Prefer a shared base model with language/ecosystem-specific adapters when evaluation shows that this improves quality.
 
-Training data should emphasize real review signals such as before/after fixes, pull-request discussions, security fixes, bug fixes, refactors, and accepted/rejected review feedback. Dataset records must retain provenance and applicable license metadata.
+Training data should emphasize real review signals: before/after fixes, pull-request discussions, security fixes, bug fixes, refactors, and accepted/rejected review feedback. Dataset records retain provenance and applicable license metadata.
+
+Large model binaries and raw third-party repositories do not belong in Git.
 
 ## Repository layout
 
 ```text
-models/       Model definitions, adapters, manifests, and artifact metadata
+core/         Rust production engine
+languages/    Language-native integrations
+ecosystems/   Framework, ORM, database, and tool integrations
+models/       Model definitions, adapters, manifests, artifact metadata
+training/     Python ML workflows
 datasets/     Versioned dataset outputs and manifests
-training/     Fine-tuning and reproducible training pipelines
-evaluation/   Benchmarks and model-quality measurements
-inference/    Local CPU/GPU/WebGPU/WASM inference runtimes
-analyzers/    Deterministic AST, lint, type, security, and dependency analysis
-ecosystem/    Language/framework/ORM/database/tool catalogs
 ingestion/    Git/GitHub/review/diff/license/provenance ingestion
-docker/       Reproducible development, training, evaluation, and inference images
-scripts/      Small deterministic project utilities
-docs/         Architecture and project documentation
+analyzers/    Deterministic AST, lint, type, security, dependency analysis
+evaluation/   Benchmarks and regression measurement
+interfaces/   CLI, LSP, API, and future editor clients
+runtimes/     Native, server, and future WASM/WebGPU targets
+schemas/      Versioned cross-language contracts
+docker/       Reproducible development/training/evaluation environments
+docs/         Architecture and development documentation
 tests/        Automated tests
 ```
 
-Large model binaries and raw third-party repositories should not be committed to the source repository.
-
 ## Status
 
-The repository now contains the initial multi-language platform structure and a language-neutral dataset core. The first deep implementation remains the Node.js/TypeScript/JavaScript ingestion and ecosystem pipeline.
+The repository now has the production-oriented polyglot foundation: a Rust workspace, Python training boundary, TypeScript ecosystem tooling, shared finding schema, baseline CI, artifact exclusions, and architecture documentation. The next implementation focus is the Rust repository-analysis engine and the GitHub ingestion pipeline feeding the first Node.js/TypeScript/JavaScript training datasets.
