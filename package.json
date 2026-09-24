@@ -1,8 +1,8 @@
 {
-  "name": "@codevanta/platform",
+  "name": "@codevanta/javascript-tooling",
   "version": "0.1.0",
   "private": true,
-  "description": "Local, language-specific model platform for software quality analysis.",
+  "description": "JavaScript and TypeScript ecosystem integration tooling for CodeVanta.",
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
