@@ -1,0 +1,66 @@
+{
+  "language": ["javascript", "typescript"],
+  "runtime": ["nodejs"],
+  "frameworks": [
+    {"name": "nestjs", "priority": "primary"},
+    {"name": "express", "priority": "secondary"},
+    {"name": "fastify", "priority": "secondary"}
+  ],
+  "data_access": {
+    "orms": [
+      {"name": "typeorm", "kind": "orm", "priority": "primary"},
+      {"name": "prisma", "kind": "orm", "priority": "primary"},
+      {"name": "drizzle-orm", "kind": "orm", "priority": "primary"},
+      {"name": "sequelize", "kind": "orm", "priority": "secondary"},
+      {"name": "mikro-orm", "kind": "orm", "priority": "secondary"},
+      {"name": "knex", "kind": "query-builder", "priority": "secondary"},
+      {"name": "kysely", "kind": "query-builder", "priority": "secondary"}
+    ],
+    "databases": [
+      "postgresql",
+      "mysql",
+      "mariadb",
+      "sqlite",
+      "sql-server",
+      "mongodb",
+      "redis"
+    ]
+  },
+  "testing": [
+    "jest",
+    "vitest",
+    "supertest",
+    "playwright",
+    "cypress"
+  ],
+  "tooling": [
+    "typescript",
+    "eslint",
+    "prettier",
+    "npm",
+    "pnpm",
+    "yarn",
+    "bun",
+    "webpack",
+    "esbuild",
+    "swc",
+    "tsup"
+  ],
+  "analysis_dimensions": [
+    "security",
+    "correctness",
+    "bugs",
+    "readability",
+    "maintainability",
+    "architecture",
+    "performance",
+    "testing",
+    "error-handling",
+    "api-design",
+    "database-access",
+    "orm-usage",
+    "dependency-management",
+    "standards",
+    "observability"
+  ]
+}
