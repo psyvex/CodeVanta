@@ -1,6 +1,8 @@
 mod analyzers;
+mod parser;
 
 pub use analyzers::ConsoleLogAnalyzer;
+pub use parser::{has_syntax_errors, parse, Dialect};
 
 use codevanta_engine::{Language, LanguageDescriptor};
 
