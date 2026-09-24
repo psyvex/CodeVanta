@@ -1,8 +1,8 @@
 {
-  "name": "@codevanta/dataset-pipeline",
+  "name": "@codevanta/platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Dataset and provenance pipeline for CodeVanta's local Node.js ecosystem code-quality models.",
+  "description": "Local, language-specific model platform for software quality analysis.",
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
