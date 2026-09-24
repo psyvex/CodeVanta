@@ -1,3 +1,4 @@
+use crate::errors::AnalyzerError;
 use crate::{AnalysisContext, Finding};
 
 /// Stable metadata describing an analyzer implementation.
@@ -25,5 +26,5 @@ impl AnalyzerDescriptor {
 /// Common contract for deterministic and AI-backed analyzers.
 pub trait Analyzer: Send + Sync {
     fn descriptor(&self) -> AnalyzerDescriptor;
-    fn analyze(&self, context: &AnalysisContext) -> Vec<Finding>;
+    fn analyze(&self, context: &AnalysisContext) -> Result<Vec<Finding>, AnalyzerError>;
 }
