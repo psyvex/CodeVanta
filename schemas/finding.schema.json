@@ -4,14 +4,66 @@
   "title": "CodeVanta Finding",
   "type": "object",
   "additionalProperties": false,
-  "required": ["ruleId", "category", "severity", "confidence", "message"],
+  "required": [
+    "id",
+    "ruleId",
+    "category",
+    "severity",
+    "confidence",
+    "message",
+    "analyzer",
+    "relatedLocations",
+    "evidence",
+    "tags"
+  ],
   "properties": {
+    "id": { "type": "string", "minLength": 1 },
     "ruleId": { "type": "string", "minLength": 1 },
     "category": { "type": "string", "minLength": 1 },
     "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
     "confidence": { "enum": ["definite", "likely", "possible", "suggestion"] },
     "message": { "type": "string", "minLength": 1 },
-    "path": { "type": "string" },
-    "line": { "type": "integer", "minimum": 1 }
+    "explanation": { "type": ["string", "null"] },
+    "location": { "$ref": "#/$defs/location" },
+    "relatedLocations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/location" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "analyzer": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "startLine"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "startLine": { "type": "integer", "minimum": 1 },
+        "startColumn": { "type": ["integer", "null"], "minimum": 1 },
+        "endLine": { "type": ["integer", "null"], "minimum": 1 },
+        "endColumn": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "locations"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "message": { "type": ["string", "null"] },
+        "locations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/location" }
+        }
+      }
+    }
   }
 }
