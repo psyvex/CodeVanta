@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codevanta.dev/schemas/model-manifest.schema.json",
+  "title": "CodeVanta Model Manifest",
+  "description": "Reproducible metadata for a CodeVanta model specialization. Manifests never contain model weights; artifacts are referenced by location and checksum and stored externally.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "language", "status", "baseModel", "version"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$",
+      "description": "Stable manifest identifier, e.g. javascript-typescript/nestjs."
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "language": { "enum": ["javascript", "typescript"] },
+    "framework": { "type": ["string", "null"] },
+    "library": { "type": ["string", "null"] },
+    "database": { "type": ["string", "null"] },
+    "status": {
+      "enum": ["planned", "in-progress", "trained", "evaluated", "released"],
+      "description": "planned: manifest only, no dataset/adapter yet. released: artifact is available and evaluated."
+    },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "baseModel": { "$ref": "#/$defs/baseModel" },
+    "adapter": { "anyOf": [{ "$ref": "#/$defs/adapter" }, { "type": "null" }] },
+    "dataset": { "anyOf": [{ "$ref": "#/$defs/datasetRef" }, { "type": "null" }] },
+    "evaluation": { "anyOf": [{ "$ref": "#/$defs/evaluationRef" }, { "type": "null" }] },
+    "artifact": { "anyOf": [{ "$ref": "#/$defs/artifactRef" }, { "type": "null" }] },
+    "license": { "type": ["string", "null"] },
+    "notes": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "baseModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "revision": { "type": ["string", "null"] }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["lora", "qlora", "full-finetune"] },
+        "rank": { "type": ["integer", "null"], "minimum": 1 },
+        "targetModules": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "datasetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "version"],
+      "properties": {
+        "manifest": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evaluationRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "version"],
+      "properties": {
+        "manifest": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location", "checksum"],
+      "properties": {
+        "location": { "type": "string", "minLength": 1 },
+        "checksum": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

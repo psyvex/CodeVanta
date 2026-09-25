@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../schemas/model-manifest.schema.json",
+  "id": "javascript-typescript/base",
+  "name": "TypeScript/JavaScript base reviewer",
+  "language": "typescript",
+  "framework": null,
+  "library": null,
+  "database": null,
+  "status": "planned",
+  "version": "0.1.0",
+  "baseModel": {
+    "id": "Qwen2.5-Coder-7B-Instruct",
+    "source": "huggingface:Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": null
+  },
+  "adapter": null,
+  "dataset": null,
+  "evaluation": null,
+  "artifact": null,
+  "license": "apache-2.0",
+  "notes": "Shared foundation for all javascript-typescript ecosystem adapters (docs/node-ecosystem-scope.md). Ecosystem-specific manifests fine-tune an adapter on top of this base rather than training a separate model per ecosystem."
+}

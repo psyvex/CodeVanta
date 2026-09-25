@@ -7,6 +7,7 @@ name = "codevanta-training"
 version = "0.1.0"
 description = "Reproducible CodeVanta dataset, training, and evaluation tooling."
 requires-python = ">=3.11"
+dependencies = ["jsonschema>=4.0"]
 
 [tool.setuptools.packages.find]
 where = ["."]

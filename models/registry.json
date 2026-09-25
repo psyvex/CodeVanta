@@ -1,0 +1,11 @@
+{
+  "manifests": [
+    "javascript-typescript/base/manifest.json",
+    "javascript-typescript/nestjs/manifest.json",
+    "javascript-typescript/express/manifest.json",
+    "javascript-typescript/fastify/manifest.json",
+    "javascript-typescript/typeorm/manifest.json",
+    "javascript-typescript/prisma/manifest.json",
+    "javascript-typescript/drizzle/manifest.json"
+  ]
+}

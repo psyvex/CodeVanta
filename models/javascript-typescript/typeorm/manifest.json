@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/model-manifest.schema.json",
+  "id": "javascript-typescript/typeorm",
+  "name": "TypeORM entity and query reviewer",
+  "language": "typescript",
+  "framework": null,
+  "library": "typeorm",
+  "database": null,
+  "status": "planned",
+  "version": "0.1.0",
+  "baseModel": {
+    "id": "Qwen2.5-Coder-7B-Instruct",
+    "source": "huggingface:Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": null
+  },
+  "adapter": {
+    "type": "lora",
+    "rank": null,
+    "targetModules": null
+  },
+  "dataset": null,
+  "evaluation": null,
+  "artifact": null,
+  "license": "apache-2.0",
+  "notes": "First-priority ORM per docs/node-ecosystem-scope.md (decorator/entity style): decorator-based entities, repository/query-builder usage, migration risk, transaction boundaries, and n+1 patterns."
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/model-manifest.schema.json",
+  "id": "javascript-typescript/prisma",
+  "name": "Prisma schema and client reviewer",
+  "language": "typescript",
+  "framework": null,
+  "library": "prisma",
+  "database": null,
+  "status": "planned",
+  "version": "0.1.0",
+  "baseModel": {
+    "id": "Qwen2.5-Coder-7B-Instruct",
+    "source": "huggingface:Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": null
+  },
+  "adapter": {
+    "type": "lora",
+    "rank": null,
+    "targetModules": null
+  },
+  "dataset": null,
+  "evaluation": null,
+  "artifact": null,
+  "license": "apache-2.0",
+  "notes": "First-priority ORM per docs/node-ecosystem-scope.md (generated typed client style): schema.prisma modeling, migration risk, generated client usage, and transaction/query patterns."
+}
