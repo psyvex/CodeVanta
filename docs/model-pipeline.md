@@ -83,10 +83,13 @@ location + checksum). No stage is skipped.
 
 ## Serving to the CLI and editor extensions
 
-`interfaces/cli` calls a local OpenAI-compatible chat completions endpoint
-(the default local port for Ollama or `llama-server`) for the reasoning layer,
-after the deterministic analyzers have produced findings. This is decoupled
-from whether a CodeVanta-trained adapter exists yet: any local model already
-running behind that API (a released CodeVanta adapter, or a stock small code
-model) works. Editor extensions are future `interfaces/` clients that reuse
-the same engine + local-model contract; they are not implemented yet.
+`interfaces/cli`'s `review` command (`local_model.rs`) calls a local
+OpenAI-compatible chat completions endpoint (the default local port for
+Ollama or `llama-server`) for the reasoning layer, after the deterministic
+analyzers have produced findings. This is decoupled from whether a
+CodeVanta-trained adapter exists yet: any local model already running behind
+that API (a released CodeVanta adapter, or a stock small code model) works,
+and if none is reachable the deterministic findings still print with a
+warning rather than the command failing. Editor extensions are future
+`interfaces/` clients that reuse the same engine + local-model contract; they
+are not implemented yet.

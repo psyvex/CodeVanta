@@ -81,6 +81,15 @@ docs/         Architecture and development documentation
 tests/        Automated tests
 ```
 
+## Using the CLI
+
+```sh
+cargo run -p codevanta-cli -- analyze <path>   # deterministic findings only
+cargo run -p codevanta-cli -- review <path>    # findings + a local model's explanation
+```
+
+`review` runs the same deterministic analyzers as `analyze`, then asks a locally running OpenAI-compatible chat endpoint (Ollama, llama.cpp's `llama-server`, or a released CodeVanta adapter served the same way) to explain and prioritize each file's findings. The local model is optional: if the endpoint can't be reached, the deterministic findings still print and a warning goes to stderr instead of failing the command. Configure the endpoint and model with `--endpoint`/`--model` flags or the `CODEVANTA_LOCAL_MODEL_ENDPOINT`/`CODEVANTA_LOCAL_MODEL` environment variables (defaults: `http://localhost:11434/v1/chat/completions`, Ollama's default port).
+
 ## Status
 
-The repository now has the production-oriented polyglot foundation: a Rust workspace, Python training boundary, TypeScript ecosystem tooling, shared finding schema, baseline CI, artifact exclusions, and architecture documentation. The next implementation focus is the Rust repository-analysis engine and the GitHub ingestion pipeline feeding the first Node.js/TypeScript/JavaScript training datasets.
+The repository has the production-oriented polyglot foundation in place: a Rust analysis engine and CLI (deterministic AST analyzers plus local-model review), a GitHub pull-request mining pipeline, a Python dataset/training/evaluation pipeline (proven end-to-end against a tiny offline model), model manifests for the first javascript-typescript specializations, shared JSON schemas, and CI across all three stacks. See `docs/model-pipeline.md` for the full pipeline and what still needs a GPU and licensed data versus what runs today.
