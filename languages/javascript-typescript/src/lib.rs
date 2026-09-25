@@ -4,7 +4,7 @@ mod sql_analyzer;
 
 pub use analyzers::ConsoleLogAnalyzer;
 pub use parser::{Dialect, has_syntax_errors, parse};
-pub use sql_analyzer::RawSqlTemplateAnalyzer;
+pub use sql_analyzer::SqlAnalyzer;
 
 use codevanta_engine::{
     AnalysisContext, DetectionConfidence, EcosystemContext, Language, LanguageDescriptor,
