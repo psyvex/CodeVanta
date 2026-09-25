@@ -9,7 +9,11 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("peft")
 
-from codevanta_training.train import LoraTrainingConfig, build_lora_model, run_training  # noqa: E402
+from codevanta_training.train import (
+    LoraTrainingConfig,
+    build_lora_model,
+    run_training,
+)
 
 
 def make_example(summary: str) -> dict:

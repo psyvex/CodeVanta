@@ -154,9 +154,7 @@ def passes_regression_gate(
     """
     if current["macroF1"] < min_macro_f1:
         return False
-    if previous is not None and current["macroF1"] < previous["macroF1"]:
-        return False
-    return True
+    return previous is None or current["macroF1"] >= previous["macroF1"]
 
 
 def main() -> None:
@@ -172,7 +170,6 @@ def main() -> None:
     args = parser.parse_args()
 
     from peft import PeftModel
-
     from transformers import AutoTokenizer
 
     adapter_config = json.loads((args.adapter_dir / "adapter_config.json").read_text())

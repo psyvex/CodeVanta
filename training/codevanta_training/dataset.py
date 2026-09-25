@@ -111,7 +111,7 @@ def split_examples(
     test_threshold = int((val_ratio + test_ratio) * 2**32)
 
     for example in examples:
-        digest = hashlib.sha256(f"{seed}:{example_checksum(example)}".encode("utf-8")).digest()
+        digest = hashlib.sha256(f"{seed}:{example_checksum(example)}".encode()).digest()
         bucket = int.from_bytes(digest[:4], "big")
 
         if bucket < val_threshold:
