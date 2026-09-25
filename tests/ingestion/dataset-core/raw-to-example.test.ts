@@ -84,6 +84,17 @@ test('infers javascript when no TypeScript files are present', () => {
   assert.equal(example.language, 'javascript');
 });
 
+test('infers python from .py files', () => {
+  const raw = rawPullRequest({
+    files: [
+      { path: 'src/app.py', status: 'modified', additions: 1, deletions: 1, before: 'a', after: 'b' },
+    ],
+  });
+
+  const example = toDatasetExample(raw, []);
+  assert.equal(example.language, 'python');
+});
+
 test('omits licenseSpdx from provenance when the license could not be determined', () => {
   const raw = rawPullRequest({ licenseSpdx: null, licenseStatus: 'unknown' });
 

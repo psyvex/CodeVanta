@@ -65,10 +65,31 @@ test('mine lists merged pull requests then mines each one', async () => {
   }) as typeof fetch;
 
   const client = new GitHubClient({ token: 'x', fetchImpl });
-  const results = await mine(client, { owner: 'acme', repo: 'widgets', maxPages: 1, out: 'x.jsonl' });
+  const results = await mine(client, {
+    owner: 'acme',
+    repo: 'widgets',
+    language: 'javascript-typescript',
+    maxPages: 1,
+    out: 'x.jsonl',
+  });
 
   assert.equal(results.length, 1);
   assert.equal(results[0]?.pullNumber, 1);
   assert.equal(results[0]?.licenseStatus, 'allowed');
   assert.ok(requestedPaths.includes('/repos/acme/widgets/pulls/1/files'));
+});
+
+test('parseArgs defaults to javascript-typescript and accepts python', () => {
+  const defaulted = parseArgs(['--repo', 'acme/widgets', '--out', 'raw.jsonl']);
+  assert.equal(defaulted.language, 'javascript-typescript');
+
+  const python = parseArgs(['--repo', 'acme/widgets', '--language', 'python', '--out', 'raw.jsonl']);
+  assert.equal(python.language, 'python');
+});
+
+test('parseArgs rejects an unsupported language', () => {
+  assert.throws(
+    () => parseArgs(['--repo', 'acme/widgets', '--language', 'ruby', '--out', 'raw.jsonl']),
+    /--language/,
+  );
 });

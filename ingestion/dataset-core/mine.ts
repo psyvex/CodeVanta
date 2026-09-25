@@ -8,14 +8,21 @@
  *
  * Usage:
  *   GITHUB_TOKEN=... node mine.js --repo owner/name --since 2024-01-01 --out raw.jsonl
+ *   GITHUB_TOKEN=... node mine.js --repo owner/name --language python --out raw.jsonl
  */
 import { writeFile } from 'node:fs/promises';
 import { GitHubClient } from './github-client.js';
+import { MINEABLE_LANGUAGE_EXTENSIONS } from './github-types.js';
 import type { RawPullRequest } from './github-types.js';
+
+type MineableLanguage = keyof typeof MINEABLE_LANGUAGE_EXTENSIONS;
+
+const DEFAULT_LANGUAGE: MineableLanguage = 'javascript-typescript';
 
 interface CliOptions {
   owner: string;
   repo: string;
+  language: MineableLanguage;
   since?: Date | undefined;
   maxPages: number;
   out: string;
@@ -43,10 +50,17 @@ export function parseArgs(argv: string[]): CliOptions {
     throw new Error('--out <path> is required');
   }
 
+  const languageArg = args.get('language') ?? DEFAULT_LANGUAGE;
+  if (!(languageArg in MINEABLE_LANGUAGE_EXTENSIONS)) {
+    const supported = Object.keys(MINEABLE_LANGUAGE_EXTENSIONS).join(', ');
+    throw new Error(`--language must be one of: ${supported} (got "${languageArg}")`);
+  }
+
   const sinceArg = args.get('since');
   return {
     owner,
     repo,
+    language: languageArg as MineableLanguage,
     since: sinceArg ? new Date(sinceArg) : undefined,
     maxPages: Number(args.get('max-pages') ?? '10'),
     out,
@@ -73,13 +87,18 @@ async function main(): Promise<void> {
   }
 
   const options = parseArgs(process.argv.slice(2));
-  const client = new GitHubClient({ token });
+  const client = new GitHubClient({
+    token,
+    fileExtensions: MINEABLE_LANGUAGE_EXTENSIONS[options.language],
+  });
   const raw = await mine(client, options);
 
   const jsonl = raw.map((entry) => JSON.stringify(entry)).join('\n') + (raw.length ? '\n' : '');
   await writeFile(options.out, jsonl);
 
-  console.log(`mined ${raw.length} merged pull requests from ${options.owner}/${options.repo} -> ${options.out}`);
+  console.log(
+    `mined ${raw.length} merged pull requests (${options.language}) from ${options.owner}/${options.repo} -> ${options.out}`,
+  );
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

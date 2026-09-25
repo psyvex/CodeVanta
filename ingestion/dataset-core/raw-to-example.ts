@@ -1,10 +1,20 @@
 import { datasetExampleId } from './id.js';
+import { inferLanguageFromPath } from './github-types.js';
 import type { RawPullRequest } from './github-types.js';
 import type { CodeChange, DatasetExample, Language, ReviewSignal } from './types.js';
 
+/**
+ * A pull request's files are only ever from one mining run's configured
+ * fileExtensions (github-client.ts filters at mine time), so a single file's
+ * language stands for the whole PR; javascript is the fallback when nothing
+ * recognizable is present rather than leaving language undefined.
+ */
 function inferLanguage(files: RawPullRequest['files']): Language {
-  const isTypeScript = files.some((file) => /\.(ts|tsx|mts|cts)$/.test(file.path));
-  return isTypeScript ? 'typescript' : 'javascript';
+  for (const file of files) {
+    const language = inferLanguageFromPath(file.path);
+    if (language) return language;
+  }
+  return 'javascript';
 }
 
 /**

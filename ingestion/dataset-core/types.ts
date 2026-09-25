@@ -1,4 +1,4 @@
-export type Language = 'javascript' | 'typescript';
+export type Language = 'javascript' | 'typescript' | 'python';
 
 export type Confidence = 'definite' | 'likely' | 'possible' | 'suggestion';
 

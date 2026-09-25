@@ -16,6 +16,8 @@ export interface GitHubClientOptions {
   baseUrl?: string;
   fetchImpl?: typeof fetch;
   maxFileBytes?: number;
+  /** File extensions to fetch full before/after content for. Defaults to JS/TS. */
+  fileExtensions?: Set<string>;
 }
 
 interface GitHubFileEntry {
@@ -37,6 +39,7 @@ export class GitHubClient {
   private readonly baseUrl: string;
   private readonly fetchImpl: typeof fetch;
   private readonly maxFileBytes: number;
+  private readonly fileExtensions: Set<string>;
   private readonly licenseCache = new Map<string, { spdxId: string | null; status: LicenseStatus }>();
 
   constructor(options: GitHubClientOptions) {
@@ -44,6 +47,7 @@ export class GitHubClient {
     this.baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
     this.fetchImpl = options.fetchImpl ?? fetch;
     this.maxFileBytes = options.maxFileBytes ?? MAX_FILE_BYTES;
+    this.fileExtensions = options.fileExtensions ?? JAVASCRIPT_TYPESCRIPT_EXTENSIONS;
   }
 
   private async request(path: string, init: RequestInit = {}, attempt = 0): Promise<Response> {
@@ -228,9 +232,9 @@ export class GitHubClient {
     return comments;
   }
 
-  private isJavaScriptTypeScriptFile(path: string): boolean {
+  private isRelevantFile(path: string): boolean {
     const extension = path.slice(path.lastIndexOf('.'));
-    return JAVASCRIPT_TYPESCRIPT_EXTENSIONS.has(extension);
+    return this.fileExtensions.has(extension);
   }
 
   private toChangeStatus(status: string): RawFileChange['status'] {
@@ -246,8 +250,9 @@ export class GitHubClient {
     }
   }
 
-  /** Mines a single merged pull request into a RawPullRequest: JS/TS file
-   * before/after content, review comments, and repository license. */
+  /** Mines a single merged pull request into a RawPullRequest: before/after
+   * content for files matching `fileExtensions`, review comments, and
+   * repository license. */
   async minePullRequest(
     owner: string,
     repo: string,
@@ -259,7 +264,7 @@ export class GitHubClient {
       this.getRepositoryLicense(owner, repo),
     ]);
 
-    const relevantEntries = entries.filter((entry) => this.isJavaScriptTypeScriptFile(entry.filename));
+    const relevantEntries = entries.filter((entry) => this.isRelevantFile(entry.filename));
 
     const files: RawFileChange[] = await Promise.all(
       relevantEntries.map(async (entry) => {

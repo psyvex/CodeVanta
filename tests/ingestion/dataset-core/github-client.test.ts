@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GitHubClient } from '../../../ingestion/dataset-core/github-client.js';
+import { PYTHON_EXTENSIONS } from '../../../ingestion/dataset-core/github-types.js';
 
 type Route = (url: URL) => Response;
 
@@ -165,4 +166,37 @@ test('minePullRequest only fetches content for JS/TS files and attaches review c
   assert.equal(raw.reviewComments.length, 1);
   assert.equal(raw.licenseSpdx, 'Apache-2.0');
   assert.equal(raw.licenseStatus, 'allowed');
+});
+
+test('minePullRequest respects a configured fileExtensions set', async () => {
+  const client = new GitHubClient({
+    token: 'x',
+    fileExtensions: PYTHON_EXTENSIONS,
+    fetchImpl: fakeFetch({
+      '/repos/acme/widgets/pulls/7/files': () =>
+        json([
+          { filename: 'src/app.py', status: 'modified', additions: 2, deletions: 1 },
+          { filename: 'src/app.ts', status: 'modified', additions: 3, deletions: 0 },
+        ]),
+      '/repos/acme/widgets/pulls/7/comments': () => json([]),
+      '/repos/acme/widgets/license': () => json({ license: { spdx_id: 'MIT' } }),
+      '/repos/acme/widgets/contents/src/app.py': (url) =>
+        json({
+          encoding: 'base64',
+          size: 8,
+          content: Buffer.from(url.searchParams.get('ref') === 'base' ? 'before' : 'after').toString('base64'),
+        }),
+    }),
+  });
+
+  const raw = await client.minePullRequest('acme', 'widgets', {
+    number: 7,
+    title: 'Fix query',
+    mergeCommitSha: 'merge',
+    baseSha: 'base',
+    mergedAt: '2025-06-01T00:00:00Z',
+  });
+
+  assert.equal(raw.files.length, 1);
+  assert.equal(raw.files[0]?.path, 'src/app.py');
 });

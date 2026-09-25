@@ -1,4 +1,4 @@
-import type { LicenseStatus } from './types.js';
+import type { Language, LicenseStatus } from './types.js';
 
 /** File extensions the miner will fetch full before/after content for. */
 export const JAVASCRIPT_TYPESCRIPT_EXTENSIONS = new Set([
@@ -11,6 +11,34 @@ export const JAVASCRIPT_TYPESCRIPT_EXTENSIONS = new Set([
   '.mts',
   '.cts',
 ]);
+
+export const PYTHON_EXTENSIONS = new Set(['.py', '.pyi']);
+
+/**
+ * The languages the miner knows how to scope a mining run to, and the file
+ * extensions each one covers. Adding a language here is what's needed for
+ * mine.ts's --language flag to recognize it; languages/<name> having real
+ * analyzers is a separate, unrelated prerequisite for the mined data to be
+ * useful, not for mining to run.
+ */
+export const MINEABLE_LANGUAGE_EXTENSIONS: Record<'javascript-typescript' | 'python', Set<string>> = {
+  'javascript-typescript': JAVASCRIPT_TYPESCRIPT_EXTENSIONS,
+  python: PYTHON_EXTENSIONS,
+};
+
+export function inferLanguageFromPath(path: string): Language | null {
+  if (JAVASCRIPT_TYPESCRIPT_EXTENSIONS.has(extensionOf(path))) {
+    return /\.(ts|tsx|mts|cts)$/.test(path) ? 'typescript' : 'javascript';
+  }
+  if (PYTHON_EXTENSIONS.has(extensionOf(path))) {
+    return 'python';
+  }
+  return null;
+}
+
+function extensionOf(path: string): string {
+  return path.slice(path.lastIndexOf('.'));
+}
 
 export interface RawFileChange {
   path: string;

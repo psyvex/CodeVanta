@@ -6,7 +6,9 @@ Ingestion must preserve source identity and licensing metadata and must not sile
 
 ## GitHub pull request mining
 
-`dataset-core/github-client.ts` is a GitHub REST API client that mines merged pull requests from a repository: changed JS/TS file content (before/after), review comments, and the repository's license (classified via `license-policy.ts`; only `MIT/Apache-2.0/BSD-2-Clause/BSD-3-Clause/ISC` are `allowed`, everything else -- including unknown -- is `review-required` or `blocked`).
+`dataset-core/github-client.ts` is a GitHub REST API client that mines merged pull requests from a repository: changed file content (before/after) for a configurable set of extensions, review comments, and the repository's license (classified via `license-policy.ts`; only `MIT/Apache-2.0/BSD-2-Clause/BSD-3-Clause/ISC` are `allowed`, everything else -- including unknown -- is `review-required` or `blocked`).
+
+`mine.ts`'s `--language` flag selects which extensions to mine and defaults to `javascript-typescript`; pass `--language python` to mine `.py`/`.pyi` files instead (`github-types.ts#MINEABLE_LANGUAGE_EXTENSIONS`). `raw-to-example.ts` infers each `DatasetExample`'s `language` field from the mined files themselves, so nothing downstream needs to know which mining run produced them.
 
 It deliberately stops at raw evidence (`RawPullRequest`, in `github-types.ts`): it does **not** infer a finding's `category`/`severity`/`confidence` from a review comment's free text. Doing so would be fabricating training labels, not extracting them.
 
@@ -17,6 +19,8 @@ Turning mined evidence into labeled `ReviewSignal`s is a separate, human-in-the-
 ```sh
 # 1. Mine merged PRs into raw evidence (needs GITHUB_TOKEN + network access to the repo)
 GITHUB_TOKEN=... node --import tsx mine.ts --repo owner/name --since 2024-01-01 --out raw.jsonl
+# ... or, for a Python repository:
+GITHUB_TOKEN=... node --import tsx mine.ts --repo owner/name --language python --out raw.jsonl
 
 # 2. Propose candidate signals from PR titles and review comments (rule-based, offline)
 node --import tsx label.ts --in raw.jsonl --out review.jsonl
