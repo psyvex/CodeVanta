@@ -1,8 +1,14 @@
 mod analyzers;
+mod empty_catch_analyzer;
+mod eval_usage_analyzer;
+mod loose_equality_analyzer;
 mod parser;
 mod sql_analyzer;
 
 pub use analyzers::ConsoleLogAnalyzer;
+pub use empty_catch_analyzer::EmptyCatchAnalyzer;
+pub use eval_usage_analyzer::EvalUsageAnalyzer;
+pub use loose_equality_analyzer::LooseEqualityAnalyzer;
 pub use parser::{Dialect, has_syntax_errors, parse};
 pub use sql_analyzer::SqlAnalyzer;
 

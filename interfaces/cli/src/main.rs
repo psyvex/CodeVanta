@@ -4,7 +4,10 @@ use std::{
 };
 
 use codevanta_engine::{AnalysisContext, Engine, Language, SourceFile};
-use codevanta_javascript_typescript::{ConsoleLogAnalyzer, JavaScriptTypeScript, SqlAnalyzer};
+use codevanta_javascript_typescript::{
+    ConsoleLogAnalyzer, EmptyCatchAnalyzer, EvalUsageAnalyzer, JavaScriptTypeScript,
+    LooseEqualityAnalyzer, SqlAnalyzer,
+};
 use serde_json::to_string_pretty;
 
 const IGNORED_DIRECTORIES: &[&str] = &[".git", "node_modules", "target", "dist", "coverage"];
@@ -43,6 +46,9 @@ fn default_engine() -> Engine {
     let mut engine = Engine::new();
     engine.add_analyzer(ConsoleLogAnalyzer);
     engine.add_analyzer(SqlAnalyzer);
+    engine.add_analyzer(EmptyCatchAnalyzer);
+    engine.add_analyzer(LooseEqualityAnalyzer);
+    engine.add_analyzer(EvalUsageAnalyzer);
     engine
 }
 
