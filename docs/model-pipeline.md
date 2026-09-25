@@ -10,12 +10,18 @@ deterministic analyzers supply evidence that the model reasons over.
 ## Stages
 
 ```text
-1. ingest        Mine merged GitHub PRs (files, review comments, license) into
-                  RawPullRequest evidence; a human (or human-reviewed LLM
-                  pass) curates ReviewSignals from that evidence into
-                  DatasetExample records -- signals are never inferred
-                  automatically from comment text
-                  (ingestion/dataset-core/github-client.ts, raw-to-example.ts)
+1. ingest        mine: fetch merged GitHub PRs (files, review comments,
+                  license) into RawPullRequest evidence
+                  (ingestion/dataset-core/github-client.ts, mine.ts)
+                  label: rule-based proposal of candidate ReviewSignals from
+                  PR title/comment keywords, capped below "definite"
+                  confidence (ingestion/dataset-core/propose-signals.ts,
+                  label.ts)
+                  review: a human edits the proposal file in place --
+                  required, not optional; nothing is promoted un-reviewed
+                  promote: joins the reviewed signals back with the raw
+                  evidence into DatasetExample records (promote.ts,
+                  raw-to-example.ts)
 2. project        Flatten each DatasetExample's review signals into individual
                   training-example.schema.json records
                   (ingestion/dataset-core/project.ts)
