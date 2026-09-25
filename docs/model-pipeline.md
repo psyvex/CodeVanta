@@ -38,8 +38,9 @@ deterministic analyzers supply evidence that the model reasons over.
                   by review-taxonomy category, against the previous released
                   adapter (regression gate)
                   (training/codevanta_training/evaluate.py)
-7. quantize/export  Export the merged adapter to GGUF for local CPU/GPU
-                  inference via llama.cpp-compatible runtimes
+7. quantize/export  Merge the adapter into its base model, then export to
+                  GGUF for local CPU/GPU inference via llama.cpp-compatible
+                  runtimes (training/codevanta_training/export.py)
 8. release        Update the model manifest: status -> released, artifact
                   location + checksum, dataset/evaluation references
 9. serve          Local inference server (Ollama or llama.cpp server) loads
@@ -55,6 +56,17 @@ arbitrary repositories. Stages 5-8 additionally require a GPU and
 multi-gigabyte base-model downloads; they are implemented as real, tested
 code (the training loop is proven mechanically against a tiny in-memory
 model), meant to be run on infrastructure that has those resources.
+
+Stage 7's adapter merge (`export.py#merge_adapter`) is proven the same way
+as training: real peft/transformers code, verified end-to-end against the
+tiny offline model. The GGUF conversion half shells out to llama.cpp's own
+`convert_hf_to_gguf.py` instead of a hand-rolled GGUF writer, and was
+verified live in this sandbox against a real llama.cpp checkout: tensor
+conversion succeeds, and the wrapper correctly surfaces llama.cpp's own
+tokenizer-recognition check (which rejects a from-scratch synthetic
+tokenizer, as expected -- a real base model's downloaded tokenizer is
+recognized and converts cleanly). See `training/README.md`'s GGUF export
+section for how to run that live check yourself.
 
 ## Model lifecycle
 
