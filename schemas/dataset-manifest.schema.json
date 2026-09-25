@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codevanta.dev/schemas/dataset-manifest.schema.json",
+  "title": "CodeVanta Dataset Manifest",
+  "description": "Reproducible record of a curated train/val/test split produced from training-example.schema.json records. The examples themselves are not committed to Git; only this manifest is.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["datasetId", "version", "splitSeed", "counts", "checksums"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "datasetId": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "splitSeed": { "type": "integer" },
+    "counts": { "$ref": "#/$defs/splitCounts" },
+    "checksums": { "$ref": "#/$defs/splitChecksums" },
+    "sourceExamplesChecksum": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "splitCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "val", "test"],
+      "properties": {
+        "train": { "type": "integer", "minimum": 0 },
+        "val": { "type": "integer", "minimum": 0 },
+        "test": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "splitChecksums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "val", "test"],
+      "properties": {
+        "train": { "type": "string" },
+        "val": { "type": "string" },
+        "test": { "type": "string" }
+      }
+    }
+  }
+}

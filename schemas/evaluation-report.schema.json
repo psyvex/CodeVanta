@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codevanta.dev/schemas/evaluation-report.schema.json",
+  "title": "CodeVanta Evaluation Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["exampleCount", "macroF1", "categories"],
+  "properties": {
+    "exampleCount": { "type": "integer", "minimum": 0 },
+    "macroF1": { "type": "number", "minimum": 0, "maximum": 1 },
+    "categories": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/categoryScore" }
+    },
+    "passesRegressionGate": { "type": ["boolean", "null"] }
+  },
+  "$defs": {
+    "categoryScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "recall", "f1", "truePositives", "falsePositives", "falseNegatives"],
+      "properties": {
+        "precision": { "type": "number", "minimum": 0, "maximum": 1 },
+        "recall": { "type": "number", "minimum": 0, "maximum": 1 },
+        "f1": { "type": "number", "minimum": 0, "maximum": 1 },
+        "truePositives": { "type": "integer", "minimum": 0 },
+        "falsePositives": { "type": "integer", "minimum": 0 },
+        "falseNegatives": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

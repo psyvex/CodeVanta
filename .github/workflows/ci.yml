@@ -17,9 +17,12 @@ jobs:
 
   typescript:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [ecosystems/javascript, ingestion/dataset-core]
     defaults:
       run:
-        working-directory: ecosystems/javascript
+        working-directory: ${{ matrix.package }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,4 +45,18 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e . pytest ruff
       - run: ruff check .
+      - run: pytest -q tests
+
+  python-train:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: training
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .[train] pytest
       - run: pytest -q tests

@@ -5,9 +5,9 @@ import type { DatasetExample } from '../../../ingestion/dataset-core/types.js';
 
 test('normalizes and deduplicates review signals', () => {
   const result = normalizeReviewSignals([
-    { category: 'security', confidence: 'likely', summary: '  SQL injection  ' },
-    { category: 'security', confidence: 'likely', summary: 'SQL injection' },
-    { category: 'bug', confidence: 'possible', summary: 'Null handling' },
+    { category: 'security', confidence: 'likely', severity: 'high', summary: '  SQL injection  ' },
+    { category: 'security', confidence: 'likely', severity: 'high', summary: 'SQL injection' },
+    { category: 'bug', confidence: 'possible', severity: 'medium', summary: 'Null handling' },
   ]);
 
   assert.equal(result.length, 2);
@@ -23,7 +23,7 @@ test('normalizes ecosystem metadata and provenance', () => {
     databases: ['postgresql'],
     tools: ['eslint'],
     changes: [],
-    signals: [{ category: 'standards', confidence: 'suggestion', summary: '  Prefer explicit return types  ' }],
+    signals: [{ category: 'standards', confidence: 'suggestion', severity: 'low', summary: '  Prefer explicit return types  ' }],
     provenance: {
       host: 'github',
       repository: '  example/repo  ',

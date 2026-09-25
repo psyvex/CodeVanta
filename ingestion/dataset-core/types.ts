@@ -15,6 +15,8 @@ export type ReviewCategory =
   | 'orm'
   | 'framework';
 
+export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info';
+
 export type LicenseStatus = 'allowed' | 'review-required' | 'blocked' | 'unknown';
 
 export interface RepositoryProvenance {
@@ -38,8 +40,9 @@ export interface CodeChange {
 export interface ReviewSignal {
   category: ReviewCategory;
   confidence: Confidence;
+  severity: Severity;
   summary: string;
-  reviewerComment?: string;
+  reviewerComment?: string | undefined;
 }
 
 export interface DatasetExample {
