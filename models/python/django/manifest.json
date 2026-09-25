@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/model-manifest.schema.json",
+  "id": "python/django",
+  "name": "Django architecture and convention reviewer",
+  "language": "python",
+  "framework": "django",
+  "library": null,
+  "database": null,
+  "status": "planned",
+  "version": "0.1.0",
+  "baseModel": {
+    "id": "Qwen2.5-Coder-7B-Instruct",
+    "source": "huggingface:Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": null
+  },
+  "adapter": {
+    "type": "lora",
+    "rank": null,
+    "targetModules": null
+  },
+  "dataset": null,
+  "evaluation": null,
+  "artifact": null,
+  "license": "apache-2.0",
+  "notes": "Primary framework per docs/python-ecosystem-scope.md: ORM/querysets, migrations, admin, forms/serializers, middleware, and app/settings structure create the first training priority signals."
+}

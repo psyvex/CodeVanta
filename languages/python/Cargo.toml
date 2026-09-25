@@ -1,0 +1,11 @@
+[package]
+name = "codevanta-python"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Python language integration for CodeVanta"
+
+[dependencies]
+codevanta-engine = { path = "../../core/engine" }
+tree-sitter.workspace = true
+tree-sitter-python.workspace = true

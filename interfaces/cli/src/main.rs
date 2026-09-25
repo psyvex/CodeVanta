@@ -6,10 +6,14 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use codevanta_engine::{AnalysisContext, Engine, Finding, Language, SourceFile};
+use codevanta_engine::{AnalysisContext, Engine, Finding, SourceFile};
 use codevanta_javascript_typescript::{
-    ConsoleLogAnalyzer, EmptyCatchAnalyzer, EvalUsageAnalyzer, JavaScriptTypeScript,
-    LooseEqualityAnalyzer, SqlAnalyzer,
+    ConsoleLogAnalyzer, EmptyCatchAnalyzer, EvalUsageAnalyzer, LooseEqualityAnalyzer,
+    SqlAnalyzer as JavaScriptSqlAnalyzer,
+};
+use codevanta_python::{
+    BareExceptAnalyzer, DebugArtifactAnalyzer, EvalExecAnalyzer, MutableDefaultArgumentAnalyzer,
+    SqlAnalyzer as PythonSqlAnalyzer,
 };
 use local_model::LocalModelClient;
 use serde_json::to_string_pretty;
@@ -101,9 +105,8 @@ fn run_review(args: impl Iterator<Item = String>) -> Result<(), Box<dyn std::err
 }
 
 fn analyze_path(path: &Path) -> Result<Vec<Finding>, Box<dyn std::error::Error>> {
-    let language = JavaScriptTypeScript;
     let mut files = Vec::new();
-    collect_source_files(path, &language, &mut files)?;
+    collect_source_files(path, &mut files)?;
 
     let context = AnalysisContext::new(files);
     let engine = default_engine();
@@ -148,31 +151,45 @@ fn parse_args(
 fn default_engine() -> Engine {
     let mut engine = Engine::new();
     engine.add_analyzer(ConsoleLogAnalyzer);
-    engine.add_analyzer(SqlAnalyzer);
+    engine.add_analyzer(JavaScriptSqlAnalyzer);
     engine.add_analyzer(EmptyCatchAnalyzer);
     engine.add_analyzer(LooseEqualityAnalyzer);
     engine.add_analyzer(EvalUsageAnalyzer);
+    engine.add_analyzer(PythonSqlAnalyzer);
+    engine.add_analyzer(BareExceptAnalyzer);
+    engine.add_analyzer(MutableDefaultArgumentAnalyzer);
+    engine.add_analyzer(EvalExecAnalyzer);
+    engine.add_analyzer(DebugArtifactAnalyzer);
     engine
 }
 
-fn collect_source_files(
-    path: &Path,
-    language: &JavaScriptTypeScript,
-    files: &mut Vec<SourceFile>,
-) -> io::Result<()> {
+/// Maps a file path to the language tag CodeVanta's analyzers key off of,
+/// or None for a file no supported language claims.
+fn detect_language(path: &str) -> Option<&'static str> {
+    if path.ends_with(".ts")
+        || path.ends_with(".tsx")
+        || path.ends_with(".mts")
+        || path.ends_with(".cts")
+    {
+        Some("typescript")
+    } else if path.ends_with(".js")
+        || path.ends_with(".jsx")
+        || path.ends_with(".mjs")
+        || path.ends_with(".cjs")
+    {
+        Some("javascript")
+    } else if path.ends_with(".py") || path.ends_with(".pyi") {
+        Some("python")
+    } else {
+        None
+    }
+}
+
+fn collect_source_files(path: &Path, files: &mut Vec<SourceFile>) -> io::Result<()> {
     if path.is_file() {
         let source = fs::read_to_string(path)?;
         let display_path = path.to_string_lossy().to_string();
-        if language.detect(&display_path, &source) {
-            let language_id = if display_path.ends_with(".ts")
-                || display_path.ends_with(".tsx")
-                || display_path.ends_with(".mts")
-                || display_path.ends_with(".cts")
-            {
-                "typescript"
-            } else {
-                "javascript"
-            };
+        if let Some(language_id) = detect_language(&display_path) {
             files.push(SourceFile {
                 path: display_path,
                 language: Some(language_id.into()),
@@ -193,7 +210,7 @@ fn collect_source_files(
             continue;
         }
 
-        collect_source_files(&entry_path, language, files)?;
+        collect_source_files(&entry_path, files)?;
     }
 
     Ok(())

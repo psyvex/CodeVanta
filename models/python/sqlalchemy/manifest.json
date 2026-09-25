@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/model-manifest.schema.json",
+  "id": "python/sqlalchemy",
+  "name": "SQLAlchemy session and query reviewer",
+  "language": "python",
+  "framework": null,
+  "library": "sqlalchemy",
+  "database": null,
+  "status": "planned",
+  "version": "0.1.0",
+  "baseModel": {
+    "id": "Qwen2.5-Coder-7B-Instruct",
+    "source": "huggingface:Qwen/Qwen2.5-Coder-7B-Instruct",
+    "revision": null
+  },
+  "adapter": {
+    "type": "lora",
+    "rank": null,
+    "targetModules": null
+  },
+  "dataset": null,
+  "evaluation": null,
+  "artifact": null,
+  "license": "apache-2.0",
+  "notes": "First-priority non-framework ORM per docs/python-ecosystem-scope.md: session/transaction management, Core vs ORM query style, and Alembic migration risk."
+}

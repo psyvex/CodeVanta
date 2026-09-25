@@ -8,6 +8,7 @@ license.workspace = true
 [dependencies]
 codevanta-engine = { path = "../../core/engine" }
 codevanta-javascript-typescript = { path = "../../languages/javascript-typescript" }
+codevanta-python = { path = "../../languages/python" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

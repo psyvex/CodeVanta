@@ -13,3 +13,5 @@ Each specialization is a manifest at `<language>/<ecosystem>/manifest.json`, val
 `models/registry.json` lists every manifest path. `training/codevanta_training/manifest.py` loads the registry and validates each manifest against the schema; run `pytest` in `training/` to check it.
 
 The first javascript-typescript manifests follow the priority order in `docs/node-ecosystem-scope.md`: a shared `base` adapter target, then the `nestjs` framework adapter, `express` and `fastify`, and the `typeorm`, `prisma`, and `drizzle` ORM adapters.
+
+The python manifests follow the same pattern per `docs/python-ecosystem-scope.md`: a shared `base` adapter target, then the `django` framework adapter, `fastapi` and `flask`, and the `sqlalchemy` ORM adapter. `languages/python` (Rust, tree-sitter-python) already implements five deterministic analyzers this specialization's evidence would build on.

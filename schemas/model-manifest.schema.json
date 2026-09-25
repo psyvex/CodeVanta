@@ -14,7 +14,7 @@
       "description": "Stable manifest identifier, e.g. javascript-typescript/nestjs."
     },
     "name": { "type": "string", "minLength": 1 },
-    "language": { "enum": ["javascript", "typescript"] },
+    "language": { "enum": ["javascript", "typescript", "python"] },
     "framework": { "type": ["string", "null"] },
     "library": { "type": ["string", "null"] },
     "database": { "type": ["string", "null"] },

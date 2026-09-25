@@ -4,6 +4,7 @@ members = [
   "core/engine",
   "interfaces/cli",
   "languages/javascript-typescript",
+  "languages/python",
 ]
 
 [workspace.package]
@@ -18,5 +19,6 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 tree-sitter = "0.26.12"
+tree-sitter-python = "0.25.0"
 tree-sitter-typescript = "0.23.2"
 ureq = { version = "3.4.2", features = ["json"] }

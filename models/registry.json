@@ -6,6 +6,11 @@
     "javascript-typescript/fastify/manifest.json",
     "javascript-typescript/typeorm/manifest.json",
     "javascript-typescript/prisma/manifest.json",
-    "javascript-typescript/drizzle/manifest.json"
+    "javascript-typescript/drizzle/manifest.json",
+    "python/base/manifest.json",
+    "python/django/manifest.json",
+    "python/fastapi/manifest.json",
+    "python/flask/manifest.json",
+    "python/sqlalchemy/manifest.json"
   ]
 }
