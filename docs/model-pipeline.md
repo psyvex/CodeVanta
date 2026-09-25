@@ -10,10 +10,15 @@ deterministic analyzers supply evidence that the model reasons over.
 ## Stages
 
 ```text
-1. ingest        Mine repositories/PRs/commits into raw DatasetExample records
-                  (ingestion/dataset-core, TypeScript)
+1. ingest        Mine merged GitHub PRs (files, review comments, license) into
+                  RawPullRequest evidence; a human (or human-reviewed LLM
+                  pass) curates ReviewSignals from that evidence into
+                  DatasetExample records -- signals are never inferred
+                  automatically from comment text
+                  (ingestion/dataset-core/github-client.ts, raw-to-example.ts)
 2. project        Flatten each DatasetExample's review signals into individual
                   training-example.schema.json records
+                  (ingestion/dataset-core/project.ts)
 3. curate         Validate against schema, drop unlicensed/duplicate records,
                   deterministically split train/val/test
                   (training/codevanta_training/dataset.py)
@@ -36,11 +41,14 @@ deterministic analyzers supply evidence that the model reasons over.
                   over the OpenAI-compatible HTTP API
 ```
 
-Stages 1-4 and 9 run fully in this repository today. Stages 5-8 require a GPU,
-a curated licensed dataset, and multi-gigabyte base-model downloads that are
-outside what a sandboxed development session has -- they are implemented as
-real, tested code (proven mechanically against a tiny in-memory model), meant
-to be run on infrastructure that has those resources.
+Stages 1-4 and 9 are implemented as real, tested code in this repository
+today. Stage 1's GitHub client is tested against mocked HTTP responses --
+running it against a real external repository needs a GitHub token and
+network access this sandboxed development session does not have for
+arbitrary repositories. Stages 5-8 additionally require a GPU and
+multi-gigabyte base-model downloads; they are implemented as real, tested
+code (the training loop is proven mechanically against a tiny in-memory
+model), meant to be run on infrastructure that has those resources.
 
 ## Model lifecycle
 
